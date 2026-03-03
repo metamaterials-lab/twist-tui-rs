@@ -10,7 +10,7 @@ fn main() -> std::io::Result<()> {
         let mut que = Que::default();
         while !app.status.should_quit {
             terminal.draw(|frame| frame.render_widget(&app, frame.area()) )?;
-            let action = events_handler()?;
+            let action = events_handler( &app.state )?;
             que.push(action);
             let action = app.update(que.pop())?;
             que.push(action);
