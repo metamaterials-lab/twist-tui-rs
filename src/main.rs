@@ -1,16 +1,17 @@
 pub mod view;
 pub mod model;
 pub mod update;
+pub mod widgets;
 
 use crate::model::App;
-use crate::update::events_handler;
+use crate::update::{events_handler, Update};
 fn main() -> std::io::Result<()> {
     ratatui::run(|terminal| {
         let mut app = App::default();
         let mut que = Que::default();
         while !app.status.should_quit {
             terminal.draw(|frame| frame.render_widget(&app, frame.area()) )?;
-            let action = events_handler( &app.state )?;
+            let action = events_handler()?;
             que.push(action);
             let action = app.update(que.pop())?;
             que.push(action);
