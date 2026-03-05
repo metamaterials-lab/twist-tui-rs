@@ -30,5 +30,7 @@ pub enum Action {
 
 pub trait Update<T> {
     fn update( self : &mut Self, key : T ) -> std::io::Result<Action>;
+    fn focus( self : &mut Self );
+    fn unfocus( self : &mut Self );
 }
 

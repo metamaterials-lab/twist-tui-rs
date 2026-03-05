@@ -19,9 +19,8 @@ impl Widget for &Quit {
         Clear.render(area, buf);
 
         let block = Block::bordered()
-            .border_style( Style::new().red() )
-            .title("Do you want to exit?");
-        self.foo.render(block.inner(area), buf);
+            .title(Line::from(" Do you want to exit? ").centered());
+        self.selection.render(block.inner(area), buf);
         block.render(area, buf);
     }
 }

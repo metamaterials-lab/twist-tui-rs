@@ -2,10 +2,16 @@ use super::*;
 use crate::model::{State, Status};
 
 impl Update<Keys> for Status {
+    fn focus( self : &mut Self ) {
+        self.focus = true;
+    }
+    fn unfocus( self : &mut Self ) {
+        self.focus = false;
+    }
     fn update( self : &mut Self, key : Keys ) -> std::io::Result<Action>{
         let res = match key {
             Keys::Tab => {
-                self.focus = false;
+                self.unfocus();
                 Action::State(StateAction::ChangeState(State::Config))
             },
             Keys::Q => Action::State(StateAction::ChangeState(State::Quit)),

@@ -2,6 +2,8 @@ use super::*;
 use crate::model::{App, State};
 
 impl Update<Action> for App {
+    fn focus( self : &mut Self ) {}
+    fn unfocus( self : &mut Self ) {}
     fn update( self : &mut Self, action : Action ) -> std::io::Result<Action>{
         let action = if let Action::Key(key) = action {
             match self.state {
@@ -37,15 +39,15 @@ fn change_state( app : &mut App, state : State ) -> Action {
 fn focus_state( app : &mut App, state : State ) -> State {
     match state {
         State::Config => {
-            app.configs.focus = true;
+            app.configs.focus();
             State::Config
         },
         State::Status => {
-            app.status.focus = true;
+            app.status.focus();
             State::Status
         },
         State::Quit => {
-            app.quit.focus = true;
+            app.quit.focus();
             State::Quit
         },
         State::Back => {

@@ -1,13 +1,16 @@
-use crate::widgets::option::Opt;
+use crate::widgets::{option::Opt, selector::Selector};
 
 #[derive(Debug)]
 pub struct Quit {
     pub focus : bool,
-    pub foo : Opt
+    pub selection : Selector
 }
 
 impl Default for Quit {
     fn default() -> Self {
-        Quit { foo: Opt::new("Hello"), focus : false }
+        Quit {
+            selection : Selector::new([Opt::new("No"), Opt::new("Yes")]),
+            focus : false
+        }
     }
 }

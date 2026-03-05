@@ -4,7 +4,8 @@ use ratatui::{prelude::*, widgets::{Block, Paragraph}};
 pub struct Opt {
     name : String,
     pub focus : bool,
-    pub active : bool,
+    pub select : bool,
+    pub hover : bool,
 }
 
 impl Opt {
@@ -16,14 +17,20 @@ impl Opt {
 impl Widget for &Opt {
     fn render(self, area: Rect, buf: &mut Buffer)
         where Self: Sized {
+
+        let modifier = if self.select { Modifier::BOLD } else { Modifier::empty() };
+        let style = if self.focus && self.hover { Color::White } else { Color::DarkGray };
+
         let l = Layout::vertical([Constraint::Length(3)])
             .flex(layout::Flex::Center)
             .split(area);
         let area = l[0];
         let block = Block::bordered()
-            .border_style(Style::new().red());
+            .border_type(ratatui::widgets::BorderType::Rounded)
+            .border_style( style );
         let content = Paragraph::new(self.name.clone())
-            .red()
+            .style( style )
+            .style( modifier )
             .centered();
         content.render(block.inner(area), buf);
         block.render(area, buf);

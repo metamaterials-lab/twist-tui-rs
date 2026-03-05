@@ -1,7 +1,7 @@
 use crate::model::Configs;
 
 use ratatui::prelude::*;
-use ratatui::widgets::{Block, Paragraph};
+use ratatui::widgets::Block;
 
 impl Widget for &Configs {
     fn render(self, area: Rect, buf: &mut Buffer)
@@ -10,12 +10,15 @@ impl Widget for &Configs {
         let block = Block::bordered()
             .title("Control Panel")
             .border_style(style);
-        let content = Paragraph::new("Hello World");
 
-        let block_area = area;
-        let content_area = block.inner(block_area);
-
-        block.render(block_area, buf);
-        content.render(content_area, buf);
+        let n = self.parameters.len();
+        let layout = Layout::vertical
+            ( std::iter::repeat_n(Constraint::Length(3), n) )
+            .flex(layout::Flex::SpaceEvenly)
+            .split(block.inner(area));
+        for i in 0..n {
+            self.parameters[i].render(layout[i], buf);
+        }
+        block.render(area, buf);
     }
 }
