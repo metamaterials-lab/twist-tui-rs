@@ -13,8 +13,8 @@ impl Widget for &Configs {
 
         let n = self.parameters.len();
         let layout = Layout::vertical
-            ( std::iter::repeat_n(Constraint::Length(3), n) )
-            .flex(layout::Flex::SpaceEvenly)
+            ( std::iter::repeat_n(Constraint::Length(1), n) )
+            .flex(layout::Flex::Start)
             .split(block.inner(area));
         for i in 0..n {
             self.parameters[i].render(layout[i], buf);

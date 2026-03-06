@@ -14,23 +14,29 @@ impl Opt {
     }
 }
 
+fn selected_styles( flag : bool ) -> Style {
+    if flag { Style::new().white().bold() }
+    else { Style::new().dark_gray() }
+}
+fn hover_styles( flag : bool, style : Style ) -> Style {
+    if flag { style.reversed() }
+    else { style }
+}
+
 impl Widget for &Opt {
     fn render(self, area: Rect, buf: &mut Buffer)
         where Self: Sized {
 
-        let modifier = if self.select { Modifier::BOLD } else { Modifier::empty() };
-        let style = if self.focus && self.hover { Color::White } else { Color::DarkGray };
+        let style = selected_styles(self.select);
+        let style = hover_styles(self.focus && self.hover, style);
 
-        let l = Layout::vertical([Constraint::Length(3)])
+        let l = Layout::vertical([Constraint::Length(1)])
             .flex(layout::Flex::Center)
             .split(area);
         let area = l[0];
-        let block = Block::bordered()
-            .border_type(ratatui::widgets::BorderType::Rounded)
-            .border_style( style );
+        let block = Block::new()
+            .style(style);
         let content = Paragraph::new(self.name.clone())
-            .style( style )
-            .style( modifier )
             .centered();
         content.render(block.inner(area), buf);
         block.render(area, buf);

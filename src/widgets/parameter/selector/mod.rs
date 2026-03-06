@@ -1,7 +1,8 @@
+pub mod option;
+use self::option::Opt;
+use crate::update::{Update,Action,Keys};
 use ratatui::prelude::*;
 
-use crate::update::{Update,Action,Keys};
-use crate::widgets::option::Opt;
 
 #[derive(Debug)]
 pub struct Selector {
@@ -12,9 +13,9 @@ pub struct Selector {
 }
 
 impl Selector {
-    pub fn new<const N : usize>( options : [Opt; N] ) -> Self {
+    pub fn new<const N : usize>( options : [&str; N] ) -> Self {
         let mut res = Selector {
-            options: Vec::from(options),
+            options: Vec::from(options.map(|s| Opt::new(s))),
             selection: 0,
             hover : 0,
             focus : false
@@ -69,8 +70,8 @@ impl Widget for &Selector {
             .flex(layout::Flex::Center)
             .split(area);
         let layout = Layout::horizontal
-            (std::iter::repeat_n(Constraint::Length(10),n))
-            .flex(layout::Flex::SpaceEvenly)
+            (std::iter::repeat_n(Constraint::Ratio(1, (n + 1) as u32),n))
+            .flex(layout::Flex::SpaceAround)
             .split(area[0]);
         for i in 0..n {
             self.options[i].render(layout[i], buf);
