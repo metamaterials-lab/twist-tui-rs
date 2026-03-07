@@ -7,11 +7,15 @@ impl Update<Keys> for Configs {
         for i in 0..self.parameters.len() {
             if i == self.select { self.parameters[i].focus(); }
             else { self.parameters[i].unfocus(); }
+            self.parameters[i].preview(false);
         }
     }
     fn unfocus( self : &mut Self ) {
         self.focus = false;
         self.parameters[self.select].unfocus();
+        for p in &mut self.parameters {
+            p.preview(true);
+        }
     }
     fn update( self : &mut Self, key : Keys ) -> std::io::Result<Action>{
         let res = match key {

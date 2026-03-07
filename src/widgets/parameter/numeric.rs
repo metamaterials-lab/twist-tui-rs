@@ -22,11 +22,12 @@ pub struct Numeric<T : Num> {
     pub max : T,
     pub inc : T,
     pub focus : bool,
+    pub preview : bool,
 }
 
 impl <T: Num> Numeric<T> {
     pub fn new( val : T, min : T, max : T, inc : T ) -> Self {
-        Numeric { val, min, max, inc, focus: false }
+        Numeric { val, min, max, inc, focus: false, preview: false }
     }
     pub fn percent( self : &Self ) -> u16 {
         ( 100f32 * ( self.val - self.min ).as_f32() / ( self.max - self.min ).as_f32() ) as u16
@@ -59,17 +60,19 @@ impl <T : Num> Update<Keys> for Numeric<T> {
 impl <T : Num> Widget for &Numeric<T> {
     fn render(self, area: ratatui::prelude::Rect, buf: &mut ratatui::prelude::Buffer)
         where Self: Sized {
-        
-        //let widget = Paragraph::new( format!("{}", self.val) )
-            //.red()
-            //.bg(Color::Green)
-            //.centered();
-        //widget.render(area, buf);
-        Gauge::default()
-            .percent(self.percent())
-            .label( format!("{:03.2}", self.val) )
-            .style(Style::new().bold().bg(Color::Red))
-            .render(area, buf);
+        let color = if self.focus { Color::LightRed } else { Color::Red };
+        if self.preview {
+            format!("{:.2}", self.val)
+                .bold()
+                .into_centered_line()
+                .render(area, buf);
+        } else {
+            Gauge::default()
+                .percent(self.percent())
+                .label( format!("{:.2}", self.val).bold() )
+                .gauge_style(color)
+                .render(area, buf);
+        }
 
     }
 }

@@ -50,7 +50,7 @@ impl <P : Param> Update<Keys> for Parameter<P> {
 impl <P : Param> Widget for &Parameter<P> {
     fn render(self, area: Rect, buf: &mut Buffer)
         where Self: Sized {
-        let layout = Layout::horizontal([Constraint::Ratio(1, 4), Constraint::Fill(1)])
+        let layout = Layout::horizontal([Constraint::Fill(1), Constraint::Fill(1)])
             .split(area);
         let n_layout = Layout::vertical([Constraint::Length(1)])
             .flex(layout::Flex::Center)

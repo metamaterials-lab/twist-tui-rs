@@ -10,6 +10,7 @@ pub struct Selector {
     pub selection : usize,
     pub hover : usize,
     pub focus : bool,
+    pub preview : bool
 }
 
 impl Selector {
@@ -18,7 +19,8 @@ impl Selector {
             options: Vec::from(options.map(|s| Opt::new(s))),
             selection: 0,
             hover : 0,
-            focus : false
+            focus : false,
+            preview : false
         };
         res.apply_selections();
         res
@@ -69,12 +71,16 @@ impl Widget for &Selector {
         let area = Layout::vertical([Constraint::Fill(1)])
             .flex(layout::Flex::Center)
             .split(area);
-        let layout = Layout::horizontal
-            (std::iter::repeat_n(Constraint::Ratio(1, (n + 1) as u32),n))
-            .flex(layout::Flex::SpaceAround)
-            .split(area[0]);
-        for i in 0..n {
-            self.options[i].render(layout[i], buf);
+        if !self.preview {
+            let layout = Layout::horizontal
+                (std::iter::repeat_n(Constraint::Ratio(1, n as u32),n))
+                .flex(layout::Flex::SpaceBetween)
+                .split(area[0]);
+            for i in 0..n {
+                self.options[i].render(layout[i], buf);
+            }
+        } else {
+            self.options[self.selection].render(area[0], buf);
         }
     }
 }

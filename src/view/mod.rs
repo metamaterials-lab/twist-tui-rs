@@ -21,10 +21,12 @@ impl Widget for &App {
             ])
             .split(area);
 
+        let percent = if self.configs.focus { 35 } else { 18 };
+
         let horizontal_layout = Layout::default()
             .direction(Direction::Horizontal)
             .constraints([
-                Constraint::Percentage(25),
+                Constraint::Percentage(percent),
                 Constraint::Fill(1)
             ])
             .split(vertical_layout[1]);

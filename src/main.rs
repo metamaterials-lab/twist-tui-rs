@@ -2,6 +2,7 @@ pub mod view;
 pub mod model;
 pub mod update;
 pub mod widgets;
+pub mod serial;
 
 use crate::model::App;
 use crate::update::{events_handler, Update};

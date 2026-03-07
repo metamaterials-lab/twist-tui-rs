@@ -12,11 +12,14 @@ impl Opt {
     pub fn new( name : &str ) -> Self {
         Opt { name: name.to_string(), ..Opt::default() }
     }
+    pub fn get( self : &Self ) -> &str {
+        &self.name
+    }
 }
 
 fn selected_styles( flag : bool ) -> Style {
-    if flag { Style::new().white().bold() }
-    else { Style::new().dark_gray() }
+    if flag { Style::new().light_cyan().bold() }
+    else { Style::new().cyan() }
 }
 fn hover_styles( flag : bool, style : Style ) -> Style {
     if flag { style.reversed() }

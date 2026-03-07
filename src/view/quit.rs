@@ -20,7 +20,10 @@ impl Widget for &Quit {
 
         let block = Block::bordered()
             .title(Line::from(" Do you want to exit? ").centered());
-        self.selection.render(block.inner(area), buf);
+        let l = Layout::horizontal([Constraint::Fill(1)])
+            .horizontal_margin(2)
+            .split(block.inner(area));
+        self.selection.render(l[0], buf);
         block.render(area, buf);
     }
 }

@@ -6,16 +6,28 @@ use ratatui::widgets::{Block, Paragraph};
 impl Widget for &Status {
     fn render(self, area: Rect, buf: &mut Buffer)
         where Self: Sized {
-        let style = if self.focus { Style::new().blue() } else { Style::new() };
+        let style = if self.focus { Color::LightMagenta } else { Color::White };
         let block = Block::bordered()
             .title("Status")
             .border_style( style );
-        let content = Paragraph::new("Hello World");
 
-        let block_area = area;
-        let content_area = block.inner(block_area);
+        let layout = Layout::horizontal([
+            Constraint::Fill(2),
+            Constraint::Fill(2),
+            Constraint::Fill(1),
+            Constraint::Fill(1),
+        ])
+            .horizontal_margin(2)
+            .split(block.inner(area));
 
-        block.render(block_area, buf);
-        content.render(content_area, buf);
+        block.render(area, buf);
+
+        format!("Port: {}", self.serial_port)
+            .render(layout[0], buf);
+        self.button.render(layout[1], buf);
+        format!("| {:03.2} LBIN |", self.torque)
+            .render(layout[2], buf);
+        format!("| {:03.2} DEG |", self.angle)
+            .render(layout[3], buf);
     }
 }

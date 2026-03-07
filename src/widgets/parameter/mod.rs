@@ -27,6 +27,31 @@ impl P {
     pub fn new_i( name : &str, val : i16, min : i16, max : i16, inc : i16 ) -> Self {
         P::I( Parameter::new(name, Numeric::new(val, min, max, inc)) )
     }
+    pub fn preview( self : &mut Self, f : bool ) {
+        match self {
+            P::S(s) => s.param.preview = f,
+            P::F(s) => s.param.preview = f,
+            P::I(s) => s.param.preview = f,
+        }
+    }
+    pub fn get_s( self : &Self ) -> Option<&str> {
+        match self {
+            P::S(s) => Some(s.param.options[s.param.selection].get()),
+            _ => None,
+        }
+    }
+    pub fn get_i( self : &Self ) -> Option<i16> {
+        match self {
+            P::I(s) => Some(s.param.val),
+            _ => None,
+        }
+    }
+    pub fn get_f( self : &Self ) -> Option<f32> {
+        match self {
+            P::F(s) => Some(s.param.val),
+            _ => None,
+        }
+    }
 }
 
 impl Update<Keys> for P {
