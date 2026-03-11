@@ -1,11 +1,15 @@
+use std::time::Duration;
+
 use super::*;
 
 use crossterm::event::{self, Event, KeyCode, KeyEvent, KeyEventKind};
 pub fn events_handler() -> std::io::Result<Action> {
-    let res = match event::read()? {
-        Event::Key(key) if key.kind == KeyEventKind::Press => key_handler(key)?,
-        _ => Action::None
-    };
+    let res = if event::poll(Duration::from_millis(200))? {
+        match event::read()? {
+            Event::Key(key) if key.kind == KeyEventKind::Press => key_handler(key)?,
+            _ => Action::None
+        }
+    } else { Action::None };
     Ok(res)
 }
 

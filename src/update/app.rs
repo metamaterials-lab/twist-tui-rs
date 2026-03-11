@@ -14,10 +14,19 @@ impl Update<Action> for App {
             }
         } else { action };
 
-        let res = if let Action::State(action) = action {
+        let action = if let Action::State(action) = action {
             match action {
                 StateAction::Quit => quit( self ),
                 StateAction::ChangeState(state) => change_state( self, state ),
+                StateAction::ChangeComState(state) => change_com_state( self, state ),
+                StateAction::SerialData(x,y) => change_read_state(self, x, y),
+                StateAction::Msg(s) => panic!("{}",s),
+            }
+        } else { action };
+
+        let res = if let Action::Com(action) = action {
+            match action {
+                _ => Action::None,
             }
         } else { Action::None };
         Ok(res)
@@ -26,6 +35,27 @@ impl Update<Action> for App {
 
 fn quit( app : &mut App ) -> Action {
     app.status.should_quit = true;
+    Action::None
+}
+
+fn change_read_state( app : &mut App, x : f32, y : f32 ) -> Action {
+    app.status.angle = x;
+    app.status.torque = y;
+    Action::None
+}
+
+fn change_com_state( app : &mut App, state : ComState ) -> Action {
+    match state {
+        ComState::Run => {
+            app.lock = false;
+            app.status.change_run()
+        },
+        ComState::Setup => {
+            app.lock = true;
+            app.status.change_setup()
+        },
+        ComState::Stop => app.status.change_stop(),
+    };
     Action::None
 }
 
@@ -39,8 +69,12 @@ fn change_state( app : &mut App, state : State ) -> Action {
 fn focus_state( app : &mut App, state : State ) -> State {
     match state {
         State::Config => {
-            app.configs.focus();
-            State::Config
+            if app.lock {
+                focus_state(app, State::Status)
+            } else {
+                app.configs.focus();
+                State::Config
+            }
         },
         State::Status => {
             app.status.focus();

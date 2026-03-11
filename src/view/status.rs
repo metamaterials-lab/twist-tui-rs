@@ -1,7 +1,8 @@
 use crate::model::Status;
 
 use ratatui::prelude::*;
-use ratatui::widgets::{Block, Paragraph};
+use ratatui::style::Stylize;
+use ratatui::widgets::Block;
 
 impl Widget for &Status {
     fn render(self, area: Rect, buf: &mut Buffer)
@@ -25,9 +26,15 @@ impl Widget for &Status {
         format!("Port: {}", self.serial_port)
             .render(layout[0], buf);
         self.button.render(layout[1], buf);
-        format!("| {:03.2} LBIN |", self.torque)
+        format!("   {:03.2} LBIN   ", self.torque)
+            .bold()
+            .bg(Color::Cyan)
+            .black()
             .render(layout[2], buf);
-        format!("| {:03.2} DEG |", self.angle)
+        format!("   {:03.2} DEG   ", self.angle)
+            .bold()
+            .bg(Color::Cyan)
+            .black()
             .render(layout[3], buf);
     }
 }

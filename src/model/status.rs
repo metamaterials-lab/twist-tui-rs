@@ -1,13 +1,33 @@
 use crate::widgets::button::Button;
 
+#[derive(Default,Debug)]
+pub enum ComState {
+    #[default]
+    Run,
+    Setup,
+    Stop
+}
+
 #[derive(Debug)]
 pub struct Status {
     pub should_quit : bool,
     pub serial_port : String,
-    pub button : Button,
+    pub button : Button<ComState>,
     pub torque : f32,
     pub angle : f32,
     pub focus : bool
+}
+
+impl Status {
+    pub fn change_run( self : &mut Self ) {
+        self.button.state = ComState::Run;
+    }
+    pub fn change_setup( self : &mut Self ) {
+        self.button.state = ComState::Setup;
+    }
+    pub fn change_stop( self : &mut Self ) {
+        self.button.state = ComState::Stop;
+    }
 }
 
 impl Default for Status {

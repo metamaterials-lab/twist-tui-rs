@@ -1,4 +1,4 @@
-use ratatui::{prelude::*, style::Styled, widgets::{Block, Gauge, Paragraph}};
+use ratatui::{prelude::*, widgets::Gauge};
 use crate::update::{Action, Keys, Update};
 
 pub trait Num : PartialOrd + std::ops::Add<Output=Self> + std::ops::Sub<Output=Self> + std::fmt::Display + Copy + Clone

@@ -13,7 +13,11 @@ impl Update<Keys> for Status {
     fn update( self : &mut Self, key : Keys ) -> std::io::Result<Action>{
         let res = match key {
             Keys::Enter => {
-                self.button.update(key)?
+                match self.button.state {
+                    ComState::Run => Action::State(StateAction::ChangeComState(ComState::Setup)),
+                    ComState::Stop => Action::State(StateAction::ChangeComState(ComState::Run)),
+                    _ => Action::None
+                }
             },
             Keys::Tab => {
                 self.unfocus();

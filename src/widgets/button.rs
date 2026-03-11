@@ -1,58 +1,33 @@
-use ratatui::{prelude::*, style::Styled};
+use ratatui::prelude::*;
 
 use crate::update::{Action, Keys, Update};
 
-#[derive(Default,Debug)]
-pub enum State {
-    #[default]
-    Run,
-    Setup,
-    Stop
-}
 
 #[derive(Default,Debug)]
-pub struct Button {
-    pub state : State,
+pub struct Button<T : std::fmt::Debug> {
+    pub state : T,
     pub focus : bool
 }
 
-impl Update<Keys> for Button {
+impl <T : std::fmt::Debug> Update<Keys> for Button<T> {
     fn focus( self : &mut Self ) {
         self.focus = true;
     }
     fn unfocus( self : &mut Self ) {
         self.focus = false;
     }
-    fn update( self : &mut Self, key : Keys ) -> std::io::Result<Action> {
-        if let Keys::Enter = key {
-            let res = match self.state {
-                State::Run => {
-                    self.state = State::Setup;
-                    Action::None
-                },
-                State::Setup => {
-                    self.state = State::Stop;
-                    Action::None
-                },
-                State::Stop => {
-                    self.state = State::Run;
-                    Action::None
-                }
-            };
-            return Ok(res);
-        } else { 
-            return Ok(Action::None);
-        }
+    fn update( self : &mut Self, _ : Keys ) -> std::io::Result<Action> {
+        Ok(Action::None)
     }
 }
 
-impl Widget for &Button {
+impl <T : std::fmt::Debug> Widget for &Button<T> {
     fn render(self, area: Rect, buf: &mut Buffer)
         where Self: Sized {
 
-        let style = if self.focus { Style::new().reversed() } else { Style::new() };
-
-        format!( "| {:?} |", self.state )
+        let style = Style::new().black().bg(Color::Cyan);
+        let style = if self.focus { style.bg(Color::LightCyan) } else { style };
+        format!( " {:^11} ",format!("{:?}", self.state) )
             .bold()
             .style( style )
             .render(area, buf);

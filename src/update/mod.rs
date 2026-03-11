@@ -4,7 +4,7 @@ pub mod configs;
 pub mod quit;
 pub mod status;
 
-use crate::model::State;
+use crate::{model::{State, status::ComState}, serial::DeviceAction};
 pub use self::events::events_handler;
 
 #[derive(Debug)]
@@ -19,6 +19,9 @@ pub enum Keys {
 pub enum StateAction {
     Quit,
     ChangeState(State),
+    ChangeComState(ComState),
+    SerialData(f32,f32),
+    Msg(String)
 }
 
 #[derive(Debug)]
@@ -26,6 +29,7 @@ pub enum Action {
     None,
     Key(Keys),
     State(StateAction),
+    Com(DeviceAction),
 }
 
 pub trait Update<T> {
