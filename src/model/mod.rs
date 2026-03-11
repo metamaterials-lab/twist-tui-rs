@@ -10,7 +10,7 @@ pub use self::configs::Configs;
 pub use self::data::Data;
 pub use self::commands::Commands;
 pub use self::quit::Quit;
-use crate::serial::Com;
+use crate::serial::{Com, Machine};
 
 
 #[derive(Debug)]
@@ -35,9 +35,9 @@ pub enum State {
     Quit,
 }
 
-impl Default for App {
-    fn default() -> Self {
-        App { 
+impl App {
+    pub fn new( port : &str, baudrate : u32 ) -> std::io::Result<Self> {
+        Ok( App { 
             lock: false,
             state: State::default(),
             prev_state: State::default(),
@@ -46,7 +46,7 @@ impl Default for App {
             data: Data::default(),
             commands: Commands::default(),
             quit: Quit::default(),
-            com: Com::new("/home/luisdfj/ttyUSB1", 115200, false)
-        }
+            com: Com::new::<Machine>(port, baudrate )?
+        } )
     }
 }

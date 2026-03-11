@@ -1,5 +1,6 @@
 use super::*;
 use crate::model::{App, State};
+use std::io::{Error,ErrorKind};
 
 impl Update<Action> for App {
     fn focus( self : &mut Self ) {}
@@ -19,15 +20,25 @@ impl Update<Action> for App {
                 StateAction::Quit => quit( self ),
                 StateAction::ChangeState(state) => change_state( self, state ),
                 StateAction::ChangeComState(state) => change_com_state( self, state ),
-                StateAction::SerialData(x,y) => change_read_state(self, x, y),
-                StateAction::Msg(s) => panic!("{}",s),
+                StateAction::SerialData(x,y) => {
+                    self.status.change_angle(x, None);
+                    self.status.change_torque(y, None);
+                    Action::None
+                },
+                StateAction::SerialDataUnits(x,xu,y,yu) => {
+                    self.status.change_angle(x, Some(&xu));
+                    self.status.change_torque(y, Some(&yu));
+                    Action::None
+                },
+                StateAction::Msg(s) => {
+                    return Err( Error::new(ErrorKind::Other, s) );
+                }
             }
         } else { action };
 
         let res = if let Action::Com(action) = action {
-            match action {
-                _ => Action::None,
-            }
+            self.com.send(action)?;
+            Action::None
         } else { Action::None };
         Ok(res)
     }
@@ -38,25 +49,23 @@ fn quit( app : &mut App ) -> Action {
     Action::None
 }
 
-fn change_read_state( app : &mut App, x : f32, y : f32 ) -> Action {
-    app.status.angle = x;
-    app.status.torque = y;
-    Action::None
-}
-
 fn change_com_state( app : &mut App, state : ComState ) -> Action {
     match state {
         ComState::Run => {
             app.lock = false;
-            app.status.change_run()
+            app.status.change_run();
+            Action::Com(DeviceAction::Stop)
         },
         ComState::Setup => {
             app.lock = true;
-            app.status.change_setup()
+            app.status.change_setup();
+            Action::Com(DeviceAction::Setup(app.configs.serial_setup()))
         },
-        ComState::Stop => app.status.change_stop(),
-    };
-    Action::None
+        ComState::Stop => {
+            app.status.change_stop();
+            Action::Com(DeviceAction::None)
+        },
+    }
 }
 
 fn change_state( app : &mut App, state : State ) -> Action {

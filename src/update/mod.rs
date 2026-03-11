@@ -21,6 +21,7 @@ pub enum StateAction {
     ChangeState(State),
     ChangeComState(ComState),
     SerialData(f32,f32),
+    SerialDataUnits(f32,String,f32,String),
     Msg(String)
 }
 

@@ -14,7 +14,9 @@ pub struct Status {
     pub serial_port : String,
     pub button : Button<ComState>,
     pub torque : f32,
+    pub torque_units : String,
     pub angle : f32,
+    pub angle_units : String,
     pub focus : bool
 }
 
@@ -28,6 +30,14 @@ impl Status {
     pub fn change_stop( self : &mut Self ) {
         self.button.state = ComState::Stop;
     }
+    pub fn change_torque( self : &mut Self, t : f32, u : Option<&str> ) {
+        self.torque = t;
+        if let Some(u) = u { self.torque_units = u.to_string() }
+    }
+    pub fn change_angle( self : &mut Self, a : f32, u : Option<&str> ) {
+        self.angle = a;
+        if let Some(u) = u { self.angle_units = u.to_string() }
+    }
 }
 
 impl Default for Status {
@@ -37,7 +47,9 @@ impl Default for Status {
             serial_port: "/dev/ttyUSB0".to_string(),
             button: Button::default(),
             torque: 0.0,
+            torque_units: "LBIN".to_string(),
             angle: 0.0,
+            angle_units: "DEG".to_string(),
             focus: false
         }
     }
