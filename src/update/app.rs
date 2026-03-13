@@ -20,12 +20,13 @@ impl Update<Action> for App {
                 StateAction::Quit => quit( self ),
                 StateAction::ChangeState(state) => change_state( self, state ),
                 StateAction::ChangeComState(state) => change_com_state( self, state ),
-                StateAction::SerialData(x,y) => {
+                StateAction::SerialRecord(x,y) => {
                     self.status.change_angle(x, None);
                     self.status.change_torque(y, None);
+                    self.data.push( x,y );
                     Action::None
                 },
-                StateAction::SerialDataUnits(x,xu,y,yu) => {
+                StateAction::SerialData(x,xu,y,yu) => {
                     self.status.change_angle(x, Some(&xu));
                     self.status.change_torque(y, Some(&yu));
                     Action::None

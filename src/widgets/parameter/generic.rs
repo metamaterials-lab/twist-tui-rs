@@ -55,7 +55,8 @@ impl <P : Param> Widget for &Parameter<P> {
         let n_layout = Layout::vertical([Constraint::Length(1)])
             .flex(layout::Flex::Center)
             .split(layout[0]);
-        self.name.clone().render(n_layout[0], buf);
+        
+        format!("{}{}", if self.focus {'>'} else {' '}, self.name).render(n_layout[0], buf);
         self.param.render_ref(layout[1], buf);
     }
 }

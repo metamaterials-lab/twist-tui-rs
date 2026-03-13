@@ -1,11 +1,11 @@
-pub mod machine;
+pub mod twister;
 pub mod setup;
 pub mod virtual_machine;
 pub mod com;
 pub mod utils;
 
 pub use self::virtual_machine::VirtualMachine;
-pub use self::machine::Machine;
+pub use self::twister::Twister;
 pub use self::com::Com;
 
 pub use self::setup::SerialSetup;
@@ -13,6 +13,7 @@ pub use self::setup::SerialSetup;
 #[derive(Debug)]
 pub enum DeviceAction {
     None,
+    ChangeDir,
     Stop,
     Setup(SerialSetup),
     Read,

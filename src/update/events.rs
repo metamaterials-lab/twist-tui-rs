@@ -4,7 +4,7 @@ use super::*;
 
 use crossterm::event::{self, Event, KeyCode, KeyEvent, KeyEventKind};
 pub fn events_handler() -> std::io::Result<Action> {
-    let res = if event::poll(Duration::from_millis(200))? {
+    let res = if event::poll(Duration::from_millis(20))? {
         match event::read()? {
             Event::Key(key) if key.kind == KeyEventKind::Press => key_handler(key)?,
             _ => Action::None

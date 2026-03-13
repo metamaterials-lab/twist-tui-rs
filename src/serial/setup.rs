@@ -1,6 +1,6 @@
-#[derive(Debug)]
+#[derive(Debug,Clone, Copy)]
 pub enum Direction { CW, CCW }
-#[derive(Debug)]
+#[derive(Debug,Clone, Copy)]
 pub enum Mode { ZTOR, ZANG }
 
 #[derive(Debug)]
@@ -28,6 +28,15 @@ impl Direction {
             "CW" => Some( Direction::CW ),
             "CCW" => Some( Direction::CCW ),
             _ => None
+        }
+    }
+}
+impl std::ops::Not for Direction {
+    type Output = Direction;
+    fn not(self) -> Self::Output {
+        match self {
+            Direction::CW => Direction::CCW,
+            Direction::CCW => Direction::CW,
         }
     }
 }

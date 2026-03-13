@@ -20,8 +20,8 @@ pub enum StateAction {
     Quit,
     ChangeState(State),
     ChangeComState(ComState),
-    SerialData(f32,f32),
-    SerialDataUnits(f32,String,f32,String),
+    SerialRecord(f32,f32),
+    SerialData(f32,String,f32,String),
     Msg(String)
 }
 

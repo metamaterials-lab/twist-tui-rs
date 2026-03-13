@@ -10,7 +10,7 @@ pub use self::configs::Configs;
 pub use self::data::Data;
 pub use self::commands::Commands;
 pub use self::quit::Quit;
-use crate::serial::{Com, Machine};
+use crate::serial::{Com, Twister};
 
 
 #[derive(Debug)]
@@ -46,7 +46,7 @@ impl App {
             data: Data::default(),
             commands: Commands::default(),
             quit: Quit::default(),
-            com: Com::new::<Machine>(port, baudrate )?
+            com: Com::new::<Twister>(port, baudrate )?
         } )
     }
 }

@@ -26,12 +26,12 @@ impl Widget for &Status {
         format!("Port: {}", self.serial_port)
             .render(layout[0], buf);
         self.button.render(layout[1], buf);
-        format!("   {:3.2} {:<8}   ", self.torque, self.torque_units)
+        format!("   {:3.2} {:>6}   ", self.torque, self.torque_units)
             .bold()
             .bg(Color::Cyan)
             .black()
             .render(layout[2], buf);
-        format!("   {:3.2} {:<8}   ", self.angle, self.angle_units)
+        format!("   {:3.2} {:>6}   ", self.angle, self.angle_units)
             .bold()
             .bg(Color::Cyan)
             .black()
