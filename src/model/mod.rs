@@ -41,7 +41,7 @@ impl App {
             lock: false,
             state: State::default(),
             prev_state: State::default(),
-            status: Status::default(),
+            status: Status::new(port),
             configs: Configs::default(),
             data: Data::default(),
             commands: Commands::default(),

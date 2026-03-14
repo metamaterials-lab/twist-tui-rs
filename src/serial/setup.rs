@@ -30,6 +30,12 @@ impl Direction {
             _ => None
         }
     }
+    pub fn sign<T:From<i8>>( self : &Self ) -> T {
+        match self {
+            Direction::CCW => 1.into(),
+            Direction::CW => (-1).into(),
+        }
+    }
 }
 impl std::ops::Not for Direction {
     type Output = Direction;

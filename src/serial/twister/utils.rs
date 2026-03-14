@@ -9,12 +9,13 @@ pub fn control( twister : &mut Twister, buf : String ) -> Option<Action> {
         twister.dir = true;
         Action::Com(DeviceAction::ChangeDir)
     } else {
+        let s : f32 = twister.setup.dir.sign();
         match twister.setup.mode {
-            Mode::ZTOR if twister.dir && res.tor.abs() < 0.2 => {
+            Mode::ZTOR if twister.dir && s * res.tor < 0.2 => {
                 twister.dir = false;
                 ztor_routine(twister)
             },
-            Mode::ZANG if twister.dir && res.ang.abs() < 0.2 => {
+            Mode::ZANG if twister.dir && s * res.ang < 0.2 => {
                 twister.dir = false;
                 zang_routine(twister)
             },

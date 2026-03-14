@@ -40,11 +40,11 @@ impl Status {
     }
 }
 
-impl Default for Status {
-    fn default() -> Self {
+impl Status {
+    pub fn new( port : &str ) -> Self {
         Status {
             should_quit: false,
-            serial_port: "/dev/ttyUSB0".to_string(),
+            serial_port: port.to_string(),
             button: Button::default(),
             torque: 0.0,
             torque_units: "LBIN".to_string(),

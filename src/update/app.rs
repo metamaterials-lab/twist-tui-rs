@@ -1,5 +1,5 @@
 use super::*;
-use crate::model::{App, State};
+use crate::model::{App, Data, State};
 use std::io::{Error,ErrorKind};
 
 impl Update<Action> for App {
@@ -29,6 +29,7 @@ impl Update<Action> for App {
                 StateAction::SerialData(x,xu,y,yu) => {
                     self.status.change_angle(x, Some(&xu));
                     self.status.change_torque(y, Some(&yu));
+                    self.data.units(&xu, &yu);
                     Action::None
                 },
                 StateAction::Msg(s) => {
@@ -58,6 +59,7 @@ fn change_com_state( app : &mut App, state : ComState ) -> Action {
             Action::Com(DeviceAction::Stop)
         },
         ComState::Setup => {
+            app.data = Data::default();
             app.lock = true;
             app.status.change_setup();
             Action::Com(DeviceAction::Setup(app.configs.serial_setup()))

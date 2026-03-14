@@ -1,3 +1,4 @@
+use crate::serial::setup::Direction;
 use crate::serial::{SerialDevice,DeviceAction};
 use crate::update::Action;
 
@@ -38,14 +39,15 @@ fn commands( vm : &mut VirtualMachine, buf : &[u8] ) -> Result<()> {
     match buf[0] as char {
         'n' => {
             let buf = format!("{:3.2} LBIN\r\n {:3.2} DEG\r\n", vm.y, vm.x);
-            vm.x += vm.i * vm.d;
-            vm.y = (vm.x.abs() + 1.0).log2();
+            vm.x += vm.i * 0.1 * vm.d;
+            vm.y += vm.i * ( -vm.x.abs() ).exp();
             vm.port.write_all(buf.as_bytes())
                 .map_err(|_| Error::new(ErrorKind::NotConnected, "fail to send response"))?;
         },
         's' => { vm.i =  0.0; },
-        'u' => { vm.i =  1.0; },
-        'd' => { vm.i = -1.0; },
+        'u' => { vm.i = Direction::CW.sign();  },
+        'd' => { vm.i = Direction::CCW.sign(); },
+        'z' => { vm.x = 0.0; }
         'e' => { 
             if let Ok(b) = String::from_utf8(buf[1..6].to_vec()) {
                 if let Ok(n) = b.parse::<f32>() {

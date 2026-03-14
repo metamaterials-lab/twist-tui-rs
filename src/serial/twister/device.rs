@@ -4,7 +4,7 @@ use std::time::Duration;
 use crate::model::configs::Configs;
 use crate::update::{Action,StateAction};
 use crate::model::status::ComState;
-use super::cmd::{Cmd,command};
+use super::cmd::{Cmd,command,Units};
 use super::utils::control;
 
 impl SerialDevice for Twister {
@@ -25,11 +25,18 @@ impl SerialDevice for Twister {
     fn task( self : &mut Self, action : DeviceAction ) -> Result<Action> {
         let res = match action {
             DeviceAction::Read => {
-                command(self, Cmd::ReadData)?;
+                command(self, Cmd::ReadData,None)?;
                 Action::None
             },
             DeviceAction::Setup(setup) => {
-                command(self, Cmd::Move(setup.dir))?;
+                let d = Some(50);
+                command(self, Cmd::Stop,d)?;
+                command(self, Cmd::Manual,d)?;
+                command(self, Cmd::ProgSpeed,d)?;
+                command(self, Cmd::Units(Units::DEG),d)?;
+                command(self, Cmd::Speed(setup.spd),d)?;
+                command(self, Cmd::Zero,d)?;
+                command(self, Cmd::Move(setup.dir),None)?;
                 self.setup = setup;
                 self.record = true;
                 self.dir = false;
@@ -37,13 +44,14 @@ impl SerialDevice for Twister {
                 Action::State(StateAction::ChangeComState(ComState::Stop))
             },
             DeviceAction::Stop => {
-                command(self, Cmd::Stop)?;
+                command(self, Cmd::Stop,Some(20))?;
                 self.record = false;
                 Action::None
             },
             DeviceAction::ChangeDir => {
-                command(self, Cmd::Stop)?;
-                command(self, Cmd::Move(if self.dir { !self.setup.dir } else { self.setup.dir }))?;
+                let d = Some(20);
+                command(self, Cmd::Stop,d)?;
+                command(self, Cmd::Move(if self.dir { !self.setup.dir } else { self.setup.dir }),None)?;
                 Action::None
             },
             _ => { Action::None }
