@@ -19,10 +19,14 @@ impl Com {
         let ( tx, com_handle ) = start_device_thread(m, tx);
         Ok( Com { tx, rx, com_handle: Some(com_handle) } )
     }
-    pub fn recv( self : &mut Self ) -> Result<Action>{
-        let res = if let Ok(action) = self.rx.try_recv() { action }
-        else { Action::None };
-        Ok(res)
+    pub fn recv( self : &mut Self ) -> Vec<Action>{
+        let mut res = Vec::new();
+        loop {
+            if let Ok(action) = self.rx.try_recv() {
+                res.push(action);
+            } else { break }
+        }
+        res
     }
     pub fn send( self : &mut Self, action : DeviceAction ) -> Result<()> {
         if let DeviceAction::None = action { return Ok(()) }

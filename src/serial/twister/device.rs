@@ -29,7 +29,7 @@ impl SerialDevice for Twister {
                 Action::None
             },
             DeviceAction::Setup(setup) => {
-                let d = Some(50);
+                let d = Some(500);
                 command(self, Cmd::Stop,d)?;
                 command(self, Cmd::Manual,d)?;
                 command(self, Cmd::ProgSpeed,d)?;
@@ -49,7 +49,7 @@ impl SerialDevice for Twister {
                 Action::None
             },
             DeviceAction::ChangeDir => {
-                let d = Some(20);
+                let d = Some(200);
                 command(self, Cmd::Stop,d)?;
                 command(self, Cmd::Move(if self.dir { !self.setup.dir } else { self.setup.dir }),None)?;
                 Action::None

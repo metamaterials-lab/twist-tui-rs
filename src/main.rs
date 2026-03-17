@@ -18,8 +18,10 @@ fn main() -> std::io::Result<()> {
             let action = events_handler()?;
 
             app.update(action)?;
-            let action = app.com.recv()?;
-            app.update(action)?;
+            let actions = app.com.recv();
+            for action in actions {
+                app.update(action)?;
+            }
             app.com.send(serial::DeviceAction::Read)?;
         }
         drop(virt_com);
