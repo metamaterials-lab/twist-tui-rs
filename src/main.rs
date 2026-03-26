@@ -22,7 +22,7 @@ fn main() -> std::io::Result<()> {
             for action in actions {
                 app.update(action)?;
             }
-            app.com.send(serial::DeviceAction::Read)?;
+            app.read()?;
         }
         drop(virt_com);
         Ok(())

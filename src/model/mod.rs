@@ -10,12 +10,12 @@ pub use self::configs::Configs;
 pub use self::data::Data;
 pub use self::commands::Commands;
 pub use self::quit::Quit;
-use crate::serial::{Com, Twister};
-
+use crate::serial::{self, Com, Twister};
 
 #[derive(Debug)]
 pub struct App {
     pub lock : bool,
+    pub block_msg : bool,
     pub state : State,
     pub prev_state : State,
     pub status : Status,
@@ -39,6 +39,7 @@ impl App {
     pub fn new( port : &str, baudrate : u32 ) -> std::io::Result<Self> {
         Ok( App { 
             lock: false,
+            block_msg: false,
             state: State::default(),
             prev_state: State::default(),
             status: Status::new(port),
@@ -48,5 +49,12 @@ impl App {
             quit: Quit::default(),
             com: Com::new::<Twister>(port, baudrate )?
         } )
+    }
+
+    pub fn read( self : &mut Self ) -> std::io::Result<()> {
+        if !self.block_msg {
+            self.com.send(serial::DeviceAction::Read)?;
+        }
+        Ok(())
     }
 }

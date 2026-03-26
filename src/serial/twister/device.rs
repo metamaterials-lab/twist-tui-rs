@@ -52,7 +52,7 @@ impl SerialDevice for Twister {
                 let d = Some(200);
                 command(self, Cmd::Stop,d)?;
                 command(self, Cmd::Move(if self.dir { !self.setup.dir } else { self.setup.dir }),None)?;
-                Action::None
+                Action::State(StateAction::PushData)
             },
             _ => { Action::None }
         };

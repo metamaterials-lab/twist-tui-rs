@@ -32,6 +32,10 @@ impl Update<Action> for App {
                     self.data.units(&xu, &yu);
                     Action::None
                 },
+                StateAction::PushData => {
+                    self.data.push_state();
+                    Action::None
+                },
                 StateAction::Msg(s) => {
                     return Err( Error::new(ErrorKind::Other, s) );
                 }
@@ -55,16 +59,19 @@ fn change_com_state( app : &mut App, state : ComState ) -> Action {
     match state {
         ComState::Run => {
             app.lock = false;
+            app.block_msg = false;
             app.status.change_run();
             Action::Com(DeviceAction::Stop)
         },
         ComState::Setup => {
             app.data = Data::default();
             app.lock = true;
+            app.block_msg = true;
             app.status.change_setup();
             Action::Com(DeviceAction::Setup(app.configs.serial_setup()))
         },
         ComState::Stop => {
+            app.block_msg = false;
             app.status.change_stop();
             Action::Com(DeviceAction::None)
         },
